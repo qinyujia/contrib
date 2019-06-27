@@ -142,7 +142,7 @@ spec:
         runAsUser: 1000
         fsGroup: 1000
       volumes:
-      - name: data
+      - name: datadir
         hostPath:
           path: /mnt/viid/zookeeper
           type: DirectoryOrCreate
