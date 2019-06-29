@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-nodeport
+spec:
+  ports:
+  - port: 9093
+    nodePort: 30093
+  # [podname].broker.kafka.svc.cluster.local
+  selector:
+    app: kafka
+  type: NodePort  
 ---
 apiVersion: v1
 kind: Service
@@ -163,9 +175,9 @@ spec:
           value : "-Xmx512M -Xms512M"
         - name: KAFKA_OPTS
           value: "-Dlogging.level=INFO"
-        volumeMounts:
-        - name: datadir
-          mountPath: /var/lib/kafka
+#        volumeMounts:
+#        - name: datadir
+#          mountPath: /var/lib/kafka
         readinessProbe:
           exec:
            command: 
@@ -175,11 +187,11 @@ spec:
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
-  volumeClaimTemplates:
-  - metadata:
-      name: datadir
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 10Gi
+#  volumeClaimTemplates:
+#  - metadata:
+#      name: datadir
+#    spec:
+#      accessModes: [ "ReadWriteOnce" ]
+#      resources:
+#        requests:
+#          storage: 10Gi
