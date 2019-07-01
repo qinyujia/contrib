@@ -1,51 +1,51 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-nodeport
+  name: kafka1-nodeport
 spec:
   ports:
-  - port: 30093
-    nodePort: 30093
+  - port: 30094
+    nodePort: 30094
   # [podname].broker.kafka.svc.cluster.local
   selector:
-    app: kafka
+    app: kafka1
   type: NodePort  
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-svc
+  name: kafka1-svc
   labels:
-    app: kafka
+    app: kafka1
 spec:
   ports:
-  - port: 30093
+  - port: 30094
     name: server
   clusterIP: None
   selector:
-    app: kafka
+    app: kafka1
 ---
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: kafka-pdb
+  name: kafka1-pdb
 spec:
   selector:
     matchLabels:
-      app: kafka
+      app: kafka1
   minAvailable: 1
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: kafka
+  name: kafka1
 spec:
-  serviceName: kafka-svc
+  serviceName: kafka1-svc
   replicas: 1
   template:
     metadata:
       labels:
-        app: kafka
+        app: kafka1
     spec:
       affinity:
         podAntiAffinity:
@@ -55,7 +55,7 @@ spec:
                   - key: "app"
                     operator: In
                     values: 
-                    - kafka
+                    - kafka1
               topologyKey: "kubernetes.io/hostname"
         podAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -78,13 +78,13 @@ spec:
             memory: "1Gi"
             cpu: 500m
         ports:
-        - containerPort: 30093
+        - containerPort: 30094
           name: server
         command:
         - sh
         - -c
-        - "exec kafka-server-start.sh /opt/kafka/config/server.properties --override broker.id=${HOSTNAME##*-} \
-          --override listeners=PLAINTEXT://:30093 \
+        - "exec kafka-server-start.sh /opt/kafka/config/server.properties --override broker.id=1 \
+          --override listeners=PLAINTEXT://:30094 \
           --override zookeeper.connect=zk-0.zk-svc.default.svc.cluster.local:2181 \
           --override log.dir=/var/lib/kafka \
           --override auto.create.topics.enable=true \
@@ -183,7 +183,7 @@ spec:
            command: 
             - sh 
             - -c 
-            - "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server=localhost:30093"
+            - "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server=localhost:30094"
       securityContext:
         runAsUser: 1000
         fsGroup: 1000

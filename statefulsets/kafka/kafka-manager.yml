@@ -33,7 +33,8 @@ spec:
         - containerPort: 80
         env:
         - name: ZK_HOSTS
-          value: zk-0.zk-svc.default.svc.cluster.local:2181,zk-1.zk-svc.default.svc.cluster.local:2181,zk-2.zk-svc.default.svc.cluster.local:2181
+#          value: zk-0.zk-svc.default.svc.cluster.local:2181,zk-1.zk-svc.default.svc.cluster.local:2181,zk-2.zk-svc.default.svc.cluster.local:2181
+          value: zk-0.zk-svc.default.svc.cluster.local:2181
         command:
         - ./bin/kafka-manager
         - -Dhttp.port=80

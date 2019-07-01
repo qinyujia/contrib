@@ -1,3 +1,15 @@
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: zk-svc-nodeport
+#spec:
+#  ports:
+#  - port: 30081
+#    nodePort: 30081
+  # [podname].broker.kafka.svc.cluster.local
+#  selector:
+#    app: zk-svc
+#  type: NodePort 
 ---
 apiVersion: v1
 kind: Service
@@ -7,6 +19,8 @@ metadata:
     app: zk-svc
 spec:
   ports:
+  - port: 2181
+    name: client
   - port: 2888
     name: server
   - port: 3888
@@ -36,7 +50,7 @@ spec:
   selector:
     matchLabels:
       app: zk
-  minAvailable: 2
+  minAvailable: 1
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
@@ -44,7 +58,7 @@ metadata:
   name: zk
 spec:
   serviceName: zk-svc
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
@@ -77,7 +91,7 @@ spec:
           name: leader-election
         env:
         - name : ZK_REPLICAS
-          value: "3"
+          value: "1"
         - name : ZK_HEAP_SIZE
           valueFrom:
             configMapKeyRef:
@@ -119,8 +133,6 @@ spec:
           value: "2888"
         - name: ZK_ELECTION_PORT
           value: "3888"
-        - name: ZK_USER
-          value: "root"
         command:
         - sh
         - -c
