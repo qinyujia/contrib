@@ -91,7 +91,7 @@ spec:
           name: leader-election
         env:
         - name : ZK_REPLICAS
-          value: "1"
+          value: "3"
         - name : ZK_HEAP_SIZE
           valueFrom:
             configMapKeyRef:
