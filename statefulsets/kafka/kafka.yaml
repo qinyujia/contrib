@@ -83,6 +83,7 @@ spec:
           --override delete.topic.enable=false \
           --override leader.imbalance.check.interval.seconds=300 \
           --override leader.imbalance.per.broker.percentage=10 \
+          --override log.dirs=/kafka/disk1,/kafka/disk2 \
           --override log.flush.interval.messages=9223372036854775807 \
           --override log.flush.offset.checkpoint.interval.ms=60000 \
           --override log.flush.scheduler.interval.ms=9223372036854775807 \
@@ -164,10 +165,16 @@ spec:
         - name: KAFKA_OPTS
           value: "-Dlogging.level=INFO"
         volumeMounts:
-        - name: datadir
-          mountPath: /var/lib/kafka
+        - name: datadir1
+          mountPath: /kafka/disk1
+        - name: datadir2
+          mountPath: /kafka/disk2        
       volumes:
-      - name: datadir
+      - name: datadir1
         hostPath:
-          path: /tmp/viid/kafka
+          path: /tmp/viid/kafka/disk1
+          type: DirectoryOrCreate
+      - name: datadir2
+        hostPath:
+          path: /tmp/viid/kafka/disk2
           type: DirectoryOrCreate
