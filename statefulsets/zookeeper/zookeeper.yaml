@@ -78,10 +78,6 @@ spec:
       - name: k8szk
         imagePullPolicy: Always
         image: harbor.yitu-inc.com/qinyujia-kafka/zookeeper:0.1
-<<<<<<< Updated upstream
-=======
-#        image: gcr.io/google_samples/k8szk:v3
->>>>>>> Stashed changes
         resources:
           requests:
             memory: "2Gi"
@@ -153,19 +149,6 @@ spec:
             - "zkOk.sh"
           initialDelaySeconds: 10
           timeoutSeconds: 5
-<<<<<<< Updated upstream
-       volumeMounts:
-       - name: datadir
-         mountPath: /var/lib/zookeeper
-      securityContext:
-        runAsUser: 1000
-        fsGroup: 1000
-     volumes:
-     - name: datadir
-       hostPath:
-         path: /tmp/viid/zookeeper
-         type: DirectoryOrCreate
-=======
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/zookeeper
@@ -174,4 +157,4 @@ spec:
         hostPath:
           path: /tmp/viid/zookeeper
           type: DirectoryOrCreate
->>>>>>> Stashed changes
+
