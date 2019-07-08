@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ZK_USER=${ZK_USER:-"zookeeper"}
 ZK_LOG_LEVEL=${ZK_LOG_LEVEL:-"INFO"}
 ZK_DATA_DIR=${ZK_DATA_DIR:-"/var/lib/zookeeper/data"}
 ZK_DATA_LOG_DIR=${ZK_DATA_LOG_DIR:-"/var/lib/zookeeper/log"}
@@ -113,17 +112,14 @@ function create_data_dirs() {
 
     if [ ! -d $ZK_DATA_DIR  ]; then
         mkdir -p $ZK_DATA_DIR
-        chown -R $ZK_USER:$ZK_USER $ZK_DATA_DIR
     fi
 
     if [ ! -d $ZK_DATA_LOG_DIR  ]; then
         mkdir -p $ZK_DATA_LOG_DIR
-        chown -R $ZK_USER:$ZK_USER $ZK_DATA_LOG_DIR
     fi
 
     if [ ! -d $ZK_LOG_DIR  ]; then
         mkdir -p $ZK_LOG_DIR
-        chown -R $ZK_USER:$ZK_USER $ZK_LOG_DIR
     fi
 
     if [ ! -f $ID_FILE ]; then
