@@ -166,12 +166,6 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/kafka
-        readinessProbe:
-          exec:
-           command: 
-            - sh 
-            - -c 
-            - "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server=localhost:30093"
       volumes:
       - name: datadir
         hostPath:
