@@ -29,7 +29,7 @@ metadata:
   name: kafka
 spec:
   serviceName: kafka-svc
-  replicas: 1
+  replicas: 3
   template:
     metadata:
       labels:
@@ -164,20 +164,25 @@ spec:
           value : "-Xmx512M -Xms512M"
         - name: KAFKA_OPTS
           value: "-Dlogging.level=INFO"
-       volumeMounts:
-       - name: datadir
-         mountPath: /var/lib/kafka
+        volumeMounts:
+        - name: datadir
+          mountPath: /var/lib/kafka
         readinessProbe:
           exec:
            command: 
             - sh 
             - -c 
             - "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server=localhost:30093"
-      securityContext:
-        runAsUser: 1000
-        fsGroup: 1000
       volumes:
       - name: datadir
         hostPath:
           path: /tmp/viid/kafka
-          type: DirectoryOrCreate  
+          type: DirectoryOrCreate
+#  volumeClaimTemplates:
+#  - metadata:
+#      name: datadir
+#    spec:
+#      accessModes: [ "ReadWriteOnce" ]
+#      resources:
+#        requests:
+#          storage: 10Gi
