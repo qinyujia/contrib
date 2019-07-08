@@ -77,7 +77,7 @@ spec:
       containers:
       - name: k8szk
         imagePullPolicy: Always
-        image: gcr.io/google_samples/k8szk:v3
+        image: harbor.yitu-inc.com/qinyujia-kafka/zookeeper:0.1
         resources:
           requests:
             memory: "2Gi"
@@ -149,14 +149,14 @@ spec:
             - "zkOk.sh"
           initialDelaySeconds: 10
           timeoutSeconds: 5
-#        volumeMounts:
-#        - name: datadir
-#          mountPath: /var/lib/zookeeper
+       volumeMounts:
+       - name: datadir
+         mountPath: /var/lib/zookeeper
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
-#      volumes:
-#      - name: datadir
-#        hostPath:
-#          path: /tmp/viid/zookeeper
-#          type: DirectoryOrCreate
+     volumes:
+     - name: datadir
+       hostPath:
+         path: /tmp/viid/zookeeper
+         type: DirectoryOrCreate

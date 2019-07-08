@@ -1,12 +1,12 @@
 FROM ubuntu:16.04 
-ENV KAFKA_USER=kafka \
-KAFKA_DATA_DIR=/var/lib/kafka/data \
+
+ENV KAFKA_DATA_DIR=/var/lib/kafka/data \
 JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
 KAFKA_HOME=/opt/kafka \
 PATH=$PATH:/opt/kafka/bin
 
-ARG KAFKA_VERSION=0.10.2.0
-ARG KAFKA_DIST=kafka_2.11-0.10.2.0
+ARG KAFKA_VERSION=2.1.1
+ARG KAFKA_DIST=kafka_2.11-2.1.1
 RUN set -x \
     && apt-get update \
     && apt-get install -y openjdk-8-jre-headless wget \
@@ -22,11 +22,5 @@ RUN set -x \
 COPY log4j.properties /opt/$KAFKA_DIST/config/
 
 RUN set -x \
-    && ln -s /opt/$KAFKA_DIST $KAFKA_HOME \
-    && useradd $KAFKA_USER \
-    && [ `id -u $KAFKA_USER` -eq 1000 ] \
-    && [ `id -g $KAFKA_USER` -eq 1000 ] \
-    && mkdir -p $KAFKA_DATA_DIR \
-    && chown -R "$KAFKA_USER:$KAFKA_USER"  /opt/$KAFKA_DIST \
-    && chown -R "$KAFKA_USER:$KAFKA_USER"  $KAFKA_DATA_DIR
+    && ln -s /opt/$KAFKA_DIST $KAFKA_HOME 
   

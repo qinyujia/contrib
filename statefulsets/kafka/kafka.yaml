@@ -60,7 +60,7 @@ spec:
       containers:
       - name: k8skafka
         imagePullPolicy: Always
-        image: gcr.io/google_samples/k8skafka:v1
+        image: harbor.yitu-inc.com/qinyujia-kafka/kafka:0.1
         resources:
           requests:
             memory: "1Gi"
@@ -164,9 +164,9 @@ spec:
           value : "-Xmx512M -Xms512M"
         - name: KAFKA_OPTS
           value: "-Dlogging.level=INFO"
-#        volumeMounts:
-#        - name: datadir
-#          mountPath: /var/lib/kafka
+       volumeMounts:
+       - name: datadir
+         mountPath: /var/lib/kafka
         readinessProbe:
           exec:
            command: 
@@ -176,11 +176,8 @@ spec:
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
-#  volumeClaimTemplates:
-#  - metadata:
-#      name: datadir
-#    spec:
-#      accessModes: [ "ReadWriteOnce" ]
-#      resources:
-#        requests:
-#          storage: 10Gi
+      volumes:
+      - name: datadir
+        hostPath:
+          path: /tmp/viid/kafka
+          type: DirectoryOrCreate  
