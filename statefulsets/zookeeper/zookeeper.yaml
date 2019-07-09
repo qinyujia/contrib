@@ -1,15 +1,3 @@
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: zk-svc-nodeport
-#spec:
-#  ports:
-#  - port: 30081
-#    nodePort: 30081
-  # [podname].broker.kafka.svc.cluster.local
-#  selector:
-#    app: zk-svc
-#  type: NodePort 
 ---
 apiVersion: v1
 kind: Service
