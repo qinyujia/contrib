@@ -63,8 +63,7 @@ spec:
         image: harbor.yitu-inc.com/qinyujia-kafka/kafka:0.1
         resources:
           requests:
-            memory: "1Gi"
-            cpu: 500m
+            memory: "20Gi"
         ports:
         - containerPort: 30093
           hostPort: 30093
@@ -161,7 +160,7 @@ spec:
           --override reserved.broker.max.id=1000 "
         env:
         - name: KAFKA_HEAP_OPTS
-          value : "-Xmx512M -Xms512M"
+          value : "-Xmx20G -Xms1G"
         - name: KAFKA_OPTS
           value: "-Dlogging.level=INFO"
         volumeMounts:
@@ -173,8 +172,8 @@ spec:
       - name: datadir1
         hostPath:
           path: /tmp/viid/kafka/disk1
-          type: DirectoryOrCreate
+          type: Directory
       - name: datadir2
         hostPath:
           path: /tmp/viid/kafka/disk2
-          type: DirectoryOrCreate
+          type: Directory

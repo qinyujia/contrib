@@ -22,7 +22,7 @@ kind: ConfigMap
 metadata:
   name: zk-cm
 data:
-  jvm.heap: "1G"
+  jvm.heap: "2G"
   tick: "2000"
   init: "10"
   sync: "5"
@@ -69,7 +69,6 @@ spec:
         resources:
           requests:
             memory: "2Gi"
-            cpu: "500m"
         ports:
         - containerPort: 2181
           name: client
@@ -146,8 +145,8 @@ spec:
       - name: datadir
         hostPath:
           path: /tmp/viid/zookeeper/data
-          type: DirectoryOrCreate
+          type: Directory
       - name: configdir
         hostPath:
           path: /tmp/viid/zookeeper/conf
-          type: DirectoryOrCreate
+          type: Directory
