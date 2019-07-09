@@ -140,9 +140,14 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/zookeeper
+        - name: configdir
+          mountPath: /opt/zookeeper/conf          
       volumes:
       - name: datadir
         hostPath:
-          path: /tmp/viid/zookeeper
+          path: /tmp/viid/zookeeper/data
           type: DirectoryOrCreate
-
+      - name: configdir
+        hostPath:
+          path: /tmp/viid/zookeeper/conf
+          type: DirectoryOrCreate
