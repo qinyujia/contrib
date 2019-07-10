@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kafka-svc-1
+  name: kafka-svc
   labels:
     app: kafka
 spec:
   ports:
-  - port: 30093
+  - port: 9093
     name: server
   clusterIP: None
   selector:
@@ -21,14 +21,14 @@ spec:
   selector:
     matchLabels:
       app: kafka
-  minAvailable: 1
+  minAvailable: 2
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: kafka
 spec:
-  serviceName: kafka-svc-1
+  serviceName: kafka-svc
   replicas: 3
   template:
     metadata:
@@ -57,34 +57,31 @@ spec:
                         - zk
                  topologyKey: "kubernetes.io/hostname"
       terminationGracePeriodSeconds: 300
-      nodeSelector: 
-        messagequeue: kafka
       containers:
       - name: k8skafka
         imagePullPolicy: Always
-        image: harbor.yitu-inc.com/qinyujia-kafka/kafka:0.1
+        image: gcr.io/google_samples/k8skafka:v1
         resources:
           requests:
-            memory: "20Gi"
+            memory: "1Gi"
+            cpu: 500m
         ports:
-        - containerPort: 30093
-          hostPort: 30093
+        - containerPort: 9093
           name: server
         command:
         - sh
         - -c
         - "exec kafka-server-start.sh /opt/kafka/config/server.properties --override broker.id=${HOSTNAME##*-} \
-          --override listeners=PLAINTEXT://:30093 \
+          --override listeners=PLAINTEXT://:9093 \
           --override zookeeper.connect=zk-0.zk-svc.default.svc.cluster.local:2181,zk-1.zk-svc.default.svc.cluster.local:2181,zk-2.zk-svc.default.svc.cluster.local:2181 \
           --override log.dir=/var/lib/kafka \
-          --override auto.create.topics.enable=false \
+          --override auto.create.topics.enable=true \
           --override auto.leader.rebalance.enable=true \
           --override background.threads=10 \
           --override compression.type=producer \
           --override delete.topic.enable=false \
           --override leader.imbalance.check.interval.seconds=300 \
           --override leader.imbalance.per.broker.percentage=10 \
-          --override log.dirs=/kafka/log1,/kafka/log2 \
           --override log.flush.interval.messages=9223372036854775807 \
           --override log.flush.offset.checkpoint.interval.ms=60000 \
           --override log.flush.scheduler.interval.ms=9223372036854775807 \
@@ -108,6 +105,7 @@ spec:
           --override offsets.retention.minutes=1440 \
           --override offsets.topic.compression.codec=0 \
           --override offsets.topic.num.partitions=50 \
+          --override offsets.topic.replication.factor=3 \
           --override offsets.topic.segment.bytes=104857600 \
           --override queued.max.requests=500 \
           --override quota.consumer.default=9223372036854775807 \
@@ -135,7 +133,7 @@ spec:
           --override fetch.purgatory.purge.interval.requests=1000 \
           --override group.max.session.timeout.ms=300000 \
           --override group.min.session.timeout.ms=6000 \
-          --override inter.broker.protocol.version=0.11.0 \
+          --override inter.broker.protocol.version=0.10.2-IV0 \
           --override log.cleaner.backoff.ms=15000 \
           --override log.cleaner.dedupe.buffer.size=134217728 \
           --override log.cleaner.delete.retention.ms=86400000 \
@@ -162,35 +160,27 @@ spec:
           --override reserved.broker.max.id=1000 "
         env:
         - name: KAFKA_HEAP_OPTS
-          value : "-Xmx20G -Xms1G"
+          value : "-Xmx512M -Xms512M"
         - name: KAFKA_OPTS
           value: "-Dlogging.level=INFO"
         volumeMounts:
-        - name: datadir1
-          mountPath: /kafka/log1
-        - name: datadir2
-          mountPath: /kafka/log2 
+        - name: datadir
+          mountPath: /var/lib/kafka
+        readinessProbe:
+          exec:
+           command: 
+            - sh 
+            - -c 
+            - "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server=localhost:9093"
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
   volumeClaimTemplates:
   - metadata:
-      name: datadir1
+      name: datadir
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "local-storage"
-      selector:
-        matchLabels:
-          pv: kafka-log1
       resources:
         requests:
           storage: 10Gi
-  volumeClaimTemplates:
-  - metadata:
-      name: datadir2
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "local-storage"
-      selector:
-        matchLabels:
-          pv: kafka-log2 
-      resources:
-        requests:
-          storage: 10Gi                
+
