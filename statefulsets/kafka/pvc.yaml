@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kafka-log1-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: local-storage
+  selector:
+    matchLabels:
+      pv: kafka-log1
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kafka-log2-claim
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: local-storage
+  selector:
+    matchLabels:
+      pv: kafka-log2

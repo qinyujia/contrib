@@ -59,6 +59,13 @@ spec:
       terminationGracePeriodSeconds: 300
       nodeSelector: 
         messagequeue: kafka
+      volumes:
+      - name: datadir1
+        persistentVolumeClaim:
+          claimName: kafka-log1-claim  
+      - name: datadir2
+        persistentVolumeClaim:
+          claimName: kafka-log2-claim            
       containers:
       - name: k8skafka
         imagePullPolicy: Always
@@ -170,27 +177,27 @@ spec:
           mountPath: /kafka/log1
         - name: datadir2
           mountPath: /kafka/log2 
-  volumeClaimTemplates:
-  - metadata:
-      name: datadir1
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "local-storage"
-      selector:
-        matchLabels:
-          pv: kafka-log1
-      resources:
-        requests:
-          storage: 10Gi
-  volumeClaimTemplates:
-  - metadata:
-      name: datadir2
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "local-storage"
-      selector:
-        matchLabels:
-          pv: kafka-log2 
-      resources:
-        requests:
-          storage: 10Gi                
+  # volumeClaimTemplates:
+  # - metadata:
+  #     name: datadir1
+  #   spec:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     storageClassName: "local-storage"
+  #     selector:
+  #       matchLabels:
+  #         pv: kafka-log1
+  #     resources:
+  #       requests:
+  #         storage: 10Gi
+  # volumeClaimTemplates:
+  # - metadata:
+  #     name: datadir2
+  #   spec:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     storageClassName: "local-storage"
+  #     selector:
+  #       matchLabels:
+  #         pv: kafka-log2 
+  #     resources:
+  #       requests:
+  #         storage: 10Gi                
